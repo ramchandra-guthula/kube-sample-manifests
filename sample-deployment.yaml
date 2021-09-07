@@ -1,0 +1,58 @@
+# When we have a PSP(pod security policy) with limited permissions and kubelet will not allow to run image with root privallages(actually its not good practice as well)
+# for practice we can do as below create a PSP with privilized permissions 
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: testing-pod
+imagePullSecrets:
+- name: regcred
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sample-deploy-cr
+rules:
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - eks.privileged
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sample-deploy-crb
+roleRef:
+  kind: ClusterRole
+  name: sample-deploy-cr
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+# Authorize specific service accounts (not recommended):
+- kind: ServiceAccount
+  name: testing-pod
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      serviceAccountName: testing-pod
+      containers:
+      - name: nginx
+        image: docker/nginx:1.14.2
+        ports:
+        - containerPort: 80
