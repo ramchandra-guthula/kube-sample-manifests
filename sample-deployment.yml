@@ -53,5 +53,5 @@ spec:
       serviceAccountName: testing-pod
       containers:
       - name: nginx
-        image: docker-airbus-virtual.artifactory.2b82.aws.cloud.airbus.corp/nginx:1.14.2
+        image: docker/nginx:1.14.2
         ports:
