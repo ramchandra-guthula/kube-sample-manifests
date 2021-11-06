@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: replication-controller
+  labels:
+    env: dev
+    bussiness-unit: IT
+spec:
+  template:
+    metadata:
+      name: rc-pod
+      labels:
+        env: dev
+        bussiness-unit: IT
+    spec:
+      containers:
+      - name: rc-container
+        image: alpine:latest
+  replicas: 2
