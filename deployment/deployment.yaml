@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-sample
+  labels:
+    env: dev
+spec:
+  selector:
+    matchLabels:
+      env: dev
+      bu: IT
+  template:
+    metadata:
+      name: rc-pod
+      labels:
+        env: dev
+        bu: IT
+    spec:
+      containers:
+      - name: sample-deployment
+        image: apache2:latest
+  replicas: 3
