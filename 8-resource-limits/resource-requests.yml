@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+spec:
+  containers:
+  - name: myapp
+    image: nginx
+    resources: 
+      requests:  # If you don't specify the requests kubernetes will assign automatically limit values to requests, you can check by describe the POD
+        memory: "64Mi"
+        cpu: "250m"      
+      limits:
+        memory: "128Mi"
+        cpu: "250m"
+    ports:
+      - containerPort: 80
