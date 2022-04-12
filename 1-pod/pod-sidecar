@@ -17,7 +17,7 @@ spec:
          do 
          echo "$(date) INFO $i" >> /var/log/busybox.log;
          i=$((i+1));
-         sleep 1;
+         sleep 3;
          done
       volumeMounts:
       - name: logs
