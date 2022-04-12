@@ -1,0 +1,54 @@
+# Local storage used to create PV and PVC, it works only with single node
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mypv
+spec:
+  capacity:
+    storage: 3Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: manual
+  hostPath:
+    path: "/home/"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mypvc
+spec:
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+spec:
+  containers:
+  - name: myapp
+    image: nginx:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+    ports:
+      - containerPort: 80
+    volumeMounts:
+    - name: sample-vol
+      mountPath: /home
+  volumes:
+  - name: sample-vol
+    persistentVolumeClaim:
+      claimName: mypvc

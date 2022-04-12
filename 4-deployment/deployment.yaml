@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-sample
+  labels:
+    env: dev
+spec:
+  selector:
+    matchLabels:
+      env: dev
+      bu: IT
+  template:
+    metadata:
+      name: rc-pod
+      labels:
+        env: dev
+        bu: IT
+    spec:
+      containers:
+      - name: sample-deployment
+        image: nginx
+  replicas: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-app
+  labels:
+    env: dev
+spec:
+  ports:
+  - name: web
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    env: dev
+  type: NodePort
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nginx-sm
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      env: dev
+  endpoints:
+  - port: web
